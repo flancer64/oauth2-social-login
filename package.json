@@ -1,0 +1,37 @@
+{
+  "name": "@flancer64/oauth2-social-login",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OAuth2-based social login plugin for TeqFW, enabling seamless user registration and authentication via Google, GitHub, and Facebook.",
+  "homepage": "https://github.com/flancer64/oauth2-social-login/",
+  "bugs": {
+    "url": "https://github.com/flancer64/oauth2-social-login/issues",
+    "email": "alex@flancer64.com"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Alex Gusev",
+    "email": "alex@flancer64.com",
+    "url": "https://github.com/flancer64"
+  },
+  "repository": "github:flancer64/oauth2-social-login",
+  "scripts": {
+    "test:accept": "mocha ./test/accept --recursive",
+    "test:unit": "mocha ./test/unit --recursive"
+  },
+  "dependencies": {
+    "@teqfw/db": ">=0.22.1 <1.0.0",
+    "@teqfw/email": ">=0.21.0 <1.0.0",
+    "@teqfw/web-api": ">=0.21.0 <1.0.0",
+    "oauth2orize": ">=1.12.0 <2.0.0"
+  },
+  "devDependencies": {
+    "@teqfw/db": "github:teqfw/db#main",
+    "@teqfw/email": "github:teqfw/email#main",
+    "@teqfw/test": "github:teqfw/test#main",
+    "@teqfw/web": "github:teqfw/web#main",
+    "better-sqlite3": "latest",
+    "dotenv": "latest",
+    "mocha": "latest"
+  }
+}
