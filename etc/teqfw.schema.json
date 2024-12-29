@@ -1,0 +1,57 @@
+{
+  "package": {
+    "fl64": {
+      "package": {
+        "oauth": {
+          "package": {
+            "social": {
+              "entity": {
+                "provider": {
+                  "comment": "Stores information about social media providers.",
+                  "attr": {
+                    "id": {"type": "id"},
+                    "code": {
+                      "type": "string",
+                      "comment": "Unique provider code (e.g., 'google'), expected to be an ASCII string in lowercase."
+                    },
+                    "name": {
+                      "type": "string",
+                      "comment": "Human-readable name of the provider."
+                    },
+                    "status": {
+                      "type": "enum",
+                      "comment": "Current status of the provider (e.g., 'active', 'inactive', 'deprecated').",
+                      "options": {
+                        "values": ["ACTIVE", "INACTIVE", "DEPRECATED"]
+                      },
+                      "default": "ACTIVE"
+                    },
+                    "client_id": {
+                      "type": "string",
+                      "comment": "Client ID issued by the provider for this application."
+                    },
+                    "client_secret": {
+                      "type": "string",
+                      "comment": "Client secret issued by the provider for this application, used in OAuth2 authentication flows."
+                    },
+                    "date_created": {
+                      "type": "datetime",
+                      "comment": "Date and time when the record was created.",
+                      "default": "current"
+                    }
+                  },
+                  "index": {
+                    "code": {
+                      "type": "unique",
+                      "attrs": ["code"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

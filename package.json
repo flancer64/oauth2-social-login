@@ -23,7 +23,7 @@
     "@teqfw/db": ">=0.22.1 <1.0.0",
     "@teqfw/email": ">=0.21.0 <1.0.0",
     "@teqfw/web-api": ">=0.21.0 <1.0.0",
-    "oauth2orize": ">=1.12.0 <2.0.0"
+    "mustache": "^4.2.0"
   },
   "devDependencies": {
     "@teqfw/db": "github:teqfw/db#main",

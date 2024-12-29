@@ -1,23 +1,25 @@
 /**
  * Plugin constants (hardcoded configuration) for frontend code.
  */
-export default class Fl64_OAuth2_Login_Back_Defaults {
+export default class Fl64_OAuth2_Social_Back_Defaults {
+    CLI_PREFIX = 'fl64-oauth-social'; // prefix for CLI actions
+
     /** @type {TeqFw_Web_Back_Defaults} */
     MOD_WEB;
 
     NAME;
 
-    /** @type {Fl64_OAuth2_Login_Shared_Defaults} */
+    /** @type {Fl64_OAuth2_Social_Shared_Defaults} */
     SHARED;
 
     /**
      * @param {TeqFw_Web_Back_Defaults} MOD_WEB
-     * @param {Fl64_OAuth2_Login_Shared_Defaults} SHARED
+     * @param {Fl64_OAuth2_Social_Shared_Defaults} SHARED
      */
     constructor(
         {
             TeqFw_Web_Back_Defaults$: MOD_WEB,
-            Fl64_OAuth2_Login_Shared_Defaults$: SHARED,
+            Fl64_OAuth2_Social_Shared_Defaults$: SHARED,
         }
     ) {
 

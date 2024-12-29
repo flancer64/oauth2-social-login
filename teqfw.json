@@ -1,8 +1,21 @@
 {
   "@teqfw/di": {
     "autoload": {
-      "ns": "Fl64_OAuth2_Login",
+      "ns": "Fl64_OAuth2_Social",
       "path": "./src"
+    }
+  },
+  "@teqfw/core": {
+    "commands": [
+      "Fl64_OAuth2_Social_Back_Cli_Provider_Create"
+    ]
+  },
+  "@teqfw/web": {
+    "handlers": {
+      "Fl64_OAuth2_Social_Back_Web_Handler": {
+        "before": ["TeqFw_Web_Api_Back_Web_Handler_Service"],
+        "spaces": ["fl64-oauth2-social"]
+      }
     }
   }
 }
