@@ -17,7 +17,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
      * @param {Fl64_OAuth2_Social_Back_Plugin_Registry_Provider} regProvider
      * @param {Fl64_OAuth2_Social_Back_Store_Mem_State} memState
      * @param {Fl64_OAuth2_Social_Back_Api_App_UserManager} mgrUser
-     * @param {Fl64_OAuth2_Social_Back_Api_App_SessionManager} mgrSession
+     * @param {Fl64_Web_Session_Back_Manager} mgrSession
      */
     constructor(
         {
@@ -29,7 +29,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
             Fl64_OAuth2_Social_Back_Plugin_Registry_Provider$: regProvider,
             Fl64_OAuth2_Social_Back_Store_Mem_State$: memState,
             Fl64_OAuth2_Social_Back_Api_App_UserManager$: mgrUser,
-            Fl64_OAuth2_Social_Back_Api_App_SessionManager$: mgrSession,
+            Fl64_Web_Session_Back_Manager$: mgrSession,
         }
     ) {
         // MAIN
@@ -70,7 +70,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         const {id} = await mgrUser.createUser({trx, email});
                                         userId = id;
                                     }
-                                    const {sessionId} = await mgrSession.establishSession({
+                                    const {sessionUuid} = await mgrSession.establishSession({
                                         trx,
                                         httpRequest: req,
                                         httpResponse: res,
@@ -78,7 +78,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                     });
                                     const url = await hlpPlugin.getUrlSessionSucceed({
                                         trx,
-                                        sessionId,
+                                        sessionId: sessionUuid,
                                         provider,
                                         httpRequest: req,
                                         httpResponse: res

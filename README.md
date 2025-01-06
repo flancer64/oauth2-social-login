@@ -3,5 +3,4 @@ OAuth2-based social login plugin for TeqFW, enabling seamless user registration 
 
 ## Need to implement
 
-* `Fl64_OAuth2_Social_Back_Api_App_SessionManager`:
 * `Fl64_OAuth2_Social_Back_Api_App_UserManager`:
