@@ -64,6 +64,8 @@ class Dto {
     date_created;
 
     /**
+     * Internal numeric identifier for the provider.
+     *
      * @type {number}
      */
     id;
@@ -86,13 +88,13 @@ class Dto {
 
 /**
  * Implements metadata and utility methods for the OAuth2 Login Provider entity.
- * @implements TeqFw_Db_Back_RDb_Meta_IEntity
+ * @implements TeqFw_Db_Back_Api_RDb_Schema_Object
  */
 export default class Fl64_OAuth2_Social_Back_Store_RDb_Schema_Provider {
     /**
      * Constructor for the OAuth2 Login Provider persistent DTO class.
      *
-     * @param {Fl64_OAuth2_Social_Back_Defaults} DEF - Default settings for the plugin.
+     * @param {Fl64_OAuth2_Social_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Util_Cast} cast - Utility for type casting.
      * @param {typeof Fl64_OAuth2_Social_Shared_Enum_Provider_Status} STATUS - Enum for provider statuses.
      */
@@ -108,18 +110,22 @@ export default class Fl64_OAuth2_Social_Back_Store_RDb_Schema_Provider {
         /**
          * Creates a new DTO object with casted properties.
          *
-         * @param {Fl64_OAuth2_Social_Back_Store_RDb_Schema_Provider.Dto} [data] - Input data for the DTO.
+         * @param {Fl64_OAuth2_Social_Back_Store_RDb_Schema_Provider.Dto|Object} [data] - Input data for the DTO.
          * @returns {Fl64_OAuth2_Social_Back_Store_RDb_Schema_Provider.Dto} - Casted DTO instance.
          */
         this.createDto = function (data) {
             const res = new Dto();
-            res.client_id = cast.string(data?.client_id);
-            res.client_secret = cast.string(data?.client_secret);
-            res.code = cast.string(data?.code);
-            res.date_created = cast.date(data?.date_created);
-            res.id = cast.int(data?.id);
-            res.name = cast.string(data?.name);
-            res.status = cast.enum(data?.status, STATUS);
+            res.date_created = new Date();
+            res.status = STATUS.ACTIVE;
+            if (data) {
+                res.client_id = cast.string(data.client_id);
+                res.client_secret = cast.string(data.client_secret);
+                res.code = cast.string(data.code);
+                res.date_created = data.date_created ? cast.date(data?.date_created) : res.date_created;
+                res.id = cast.int(data.id);
+                res.name = cast.string(data.name);
+                res.status = (data.status) ? cast.enum(data.status, STATUS) : res.status;
+            }
             return res;
         };
 

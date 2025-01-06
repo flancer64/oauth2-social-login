@@ -1,6 +1,6 @@
 import assert from 'assert';
 import {createContainer} from '@teqfw/test';
-import {dbConnect, dbCreateFkEntities, dbDisconnect, dbReset, initConfig} from '../../common.mjs';
+import {dbConnect, dbDisconnect, dbReset, initConfig} from '../../common.mjs';
 
 // SETUP CONTAINER
 const container = await createContainer();
@@ -22,8 +22,6 @@ describe('Fl64_OAuth2_Social_Back_Mod_Provider', () => {
 
     before(async () => {
         await dbReset(container);
-        const {provider} = await dbCreateFkEntities(container);
-        PROVIDER_ID = provider.id;
         await dbConnect(container);
     });
 
@@ -40,6 +38,7 @@ describe('Fl64_OAuth2_Social_Back_Mod_Provider', () => {
         dto.status = 'active';
 
         const newProvider = await modProvider.create({dto});
+        PROVIDER_ID = newProvider.id;
 
         // Check if the provider entry was created
         assert.ok(newProvider, 'Provider entry should exist');

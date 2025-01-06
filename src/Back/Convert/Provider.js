@@ -25,13 +25,15 @@ export default class Fl64_OAuth2_Social_Back_Convert_Provider {
          */
         this.db2dom = function ({dbProvider}) {
             const res = domDto.createDto();
-            res.clientId = cast.string(dbProvider?.client_id);
-            res.clientSecret = cast.string(dbProvider?.client_secret);
-            res.code = cast.string(dbProvider?.code);
-            res.dateCreated = cast.date(dbProvider?.date_created);
-            res.id = cast.int(dbProvider?.id);
-            res.name = cast.string(dbProvider?.name);
-            res.status = cast.enum(dbProvider?.status, STATUS);
+            if (dbProvider) {
+                res.clientId = cast.string(dbProvider.client_id);
+                res.clientSecret = cast.string(dbProvider.client_secret);
+                res.code = cast.string(dbProvider.code);
+                res.dateCreated = cast.date(dbProvider.date_created);
+                res.id = cast.int(dbProvider.id);
+                res.name = cast.string(dbProvider.name);
+                res.status = cast.enum(dbProvider.status, STATUS);
+            }
             return res;
         };
 
@@ -49,13 +51,17 @@ export default class Fl64_OAuth2_Social_Back_Convert_Provider {
          */
         this.dom2db = function ({provider}) {
             const dbProvider = rdbDto.createDto();
-            dbProvider.client_id = cast.string(provider?.clientId);
-            dbProvider.client_secret = cast.string(provider?.clientSecret);
-            dbProvider.code = cast.string(provider?.code);
-            dbProvider.date_created = cast.date(provider?.dateCreated);
-            dbProvider.id = cast.int(provider?.id);
-            dbProvider.name = cast.string(provider?.name);
-            dbProvider.status = cast.enum(provider?.status, STATUS);
+            if (provider) {
+                dbProvider.client_id = cast.string(provider.clientId);
+                dbProvider.client_secret = cast.string(provider.clientSecret);
+                dbProvider.code = cast.string(provider.code);
+                dbProvider.date_created = (provider.dateCreated)
+                    ? cast.date(provider.dateCreated) : dbProvider.date_created;
+                dbProvider.id = cast.int(provider.id);
+                dbProvider.name = cast.string(provider.name);
+                dbProvider.status = (provider.status)
+                    ? cast.enum(provider.status, STATUS) : dbProvider.status;
+            }
             return {dbProvider};
         };
     }
