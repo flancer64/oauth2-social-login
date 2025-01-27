@@ -70,12 +70,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         const {id} = await mgrUser.createUser({trx, email});
                                         userId = id;
                                     }
-                                    const {sessionUuid} = await mgrSession.establishSession({
-                                        trx,
-                                        httpRequest: req,
-                                        httpResponse: res,
-                                        userId
-                                    });
+                                    const {sessionUuid} = await mgrSession.establish({trx, req, res, userId});
                                     const url = await hlpPlugin.getUrlSessionSucceed({
                                         trx,
                                         sessionId: sessionUuid,
