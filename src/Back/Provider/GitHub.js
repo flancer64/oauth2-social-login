@@ -4,7 +4,7 @@
  *
  * @implements {Fl64_OAuth2_Social_Back_Api_Plugin_Provider_Executor}
  */
-export default class Fl64_OAuth2_Social_Back_Mod_Provider_Executor_GitHub {
+export default class Fl64_OAuth2_Social_Back_Provider_GitHub {
     /**
      * @param {Fl64_OAuth2_Social_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger

@@ -23,9 +23,10 @@ export default class Fl64_OAuth2_Social_Back_Api_Plugin_Provider_Executor {
     getAuthorizationUrl(params) {}
 
     /**
+     * Retrieves user data from the provider.
      *
-     * @param params
-     * @returns {Promise<{email:string, response:Object}>}
+     * @param {Object} params - Parameters required for fetching user data
+     * @returns {Promise<{email: string, response: Object}>} - User data and raw response
      */
     async getUserData(params) {}
 

@@ -15,8 +15,8 @@ const modProvider = await container.get('Fl64_OAuth2_Social_Back_Mod_Provider$')
 const memState = await container.get('Fl64_OAuth2_Social_Back_Store_Mem_State$');
 /** @type {Fl64_OAuth2_Social_Back_Api_App_UserManager} */
 const mgrUser = await container.get('Fl64_OAuth2_Social_Back_Api_App_UserManager$');
-/** @type {Fl64_OAuth2_Social_Back_Mod_Provider_Executor_GitHub} */
-const executorGitHub = await container.get('Fl64_OAuth2_Social_Back_Mod_Provider_Executor_GitHub$');
+/** @type {Fl64_OAuth2_Social_Back_Provider_GitHub} */
+const executorGitHub = await container.get('Fl64_OAuth2_Social_Back_Provider_GitHub$');
 
 const PROVIDER_CODE = 'github';
 const CALLBACK_STATE = 'test-state';
@@ -90,7 +90,7 @@ describe('Fl64_OAuth2_Social_Back_Web_Handler_A_Callback', () => {
         res.end = function () {};   // Mock end to suppress real ends
 
         // Mock executor to throw an error during token exchange
-        const mockExecutor = await container.get(`Fl64_OAuth2_Social_Back_Mod_Provider_Executor_${PROVIDER_CODE}$`);
+        const mockExecutor = await container.get(`Fl64_OAuth2_Social_Back_Provider_${PROVIDER_CODE}$`);
         mockExecutor.exchangeAuthorizationCode = async () => {
             throw new Error('Mock token exchange failure');
         };

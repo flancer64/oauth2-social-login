@@ -1,20 +1,26 @@
 /**
- * TODO: add description
+ * Registry for OAuth2 providers in the plugin.
+ * Allows registering and retrieving provider implementations by their unique codes.
  */
 export default class Fl64_OAuth2_Social_Back_Plugin_Registry_Provider {
     /**
      * @param {TeqFw_Core_Shared_Api_Logger} logger
-     * @param {Fl64_OAuth2_Social_Back_Mod_Provider_Executor_GitHub} execGitHub
+     * @param {Fl64_OAuth2_Social_Back_Provider_GitHub} execGitHub
+     * @param {Fl64_OAuth2_Social_Back_Provider_Google} execGoogle
+     * @param {typeof Fl64_OAuth2_Social_Shared_Enum_Provider_Code} CODE
      */
     constructor(
         {
             TeqFw_Core_Shared_Api_Logger$$: logger,
-            Fl64_OAuth2_Social_Back_Mod_Provider_Executor_GitHub$: execGitHub,
+            Fl64_OAuth2_Social_Back_Provider_GitHub$: execGitHub,
+            Fl64_OAuth2_Social_Back_Provider_Google$: execGoogle,
+            'Fl64_OAuth2_Social_Shared_Enum_Provider_Code.default': CODE,
         }
     ) {
         // VARS
         const store = new Map();
-        store.set('github', execGitHub);
+        store.set(CODE.GITHUB, execGitHub);
+        store.set(CODE.GOOGLE, execGoogle);
 
         // FUNCS
 
@@ -26,7 +32,7 @@ export default class Fl64_OAuth2_Social_Back_Plugin_Registry_Provider {
          */
         this.set = function (code, instance) {
             store.set(code, instance);
-            logger.info(`Provider ${code} registered.`);
+            logger.info(`Provider ${code} is registered.`);
         };
 
         /**

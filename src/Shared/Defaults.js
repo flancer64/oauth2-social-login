@@ -8,7 +8,9 @@ export default class Fl64_OAuth2_Social_Shared_Defaults {
     /** @type {TeqFw_Web_Shared_Defaults} */
     MOD_WEB;
 
-    // https://user.demo.gpt.wiredgeese.com/fl64-oauth2-social-login/github/callback
+    ROUTE_CALLBACK = 'callback';
+    ROUTE_SELECT = 'provider-select';
+
     SPACE = 'fl64-oauth2-social';
 
     constructor(

@@ -44,10 +44,10 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler {
                 const endpoint = relativePath.split('/')[0];
 
                 switch (endpoint) {
-                    case 'provider-select':
+                    case DEF.SHARED.ROUTE_SELECT:
                         await aProviderSelect.act(req, res);
                         break;
-                    case 'callback':
+                    case DEF.SHARED.ROUTE_CALLBACK:
                         await aCallback.act(req, res);
                         break;
                     default:
