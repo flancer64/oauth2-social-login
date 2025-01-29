@@ -2,32 +2,46 @@
  * Implementation of the OAuth2 provider executor for GitHub.
  * This class implements the interface for providing GitHub-specific functionality.
  *
- * @implements {Fl64_OAuth2_Social_Back_Api_Plugin_Provider_Executor}
+ * @implements {Fl64_OAuth2_Social_Back_Api_Provider_Connector}
  */
 export default class Fl64_OAuth2_Social_Back_Provider_GitHub {
     /**
      * @param {Fl64_OAuth2_Social_Back_Defaults} DEF
      * @param {TeqFw_Core_Shared_Api_Logger} logger
+     * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
      * @param {Fl64_OAuth2_Social_Back_Helper_Web} helpWeb
+     * @param {Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity} repoIdentity
      */
     constructor(
         {
             Fl64_OAuth2_Social_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Api_Logger$$: logger,
+            TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
             Fl64_OAuth2_Social_Back_Helper_Web$: helpWeb,
+            Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
         }
     ) {
         // VARS
+        const A_IDENTITY = repoIdentity.getSchema().getAttributes();
         const HOST = 'github.com';
         const HOST_API = 'api.github.com';
         const URI_API_USER = '/user';
-        const URI_API_USER_EMAILS = '/user/emails';
         const URI_AUTH = '/login/oauth/authorize';
         const URI_TOKEN = '/login/oauth/access_token';
 
         // FUNCS
 
         // MAIN
+        this.checkIdentity = async function ({trx: trxOuter, provider, identity, userData}) {
+            let userId = null;
+            await trxWrapper.execute(trxOuter, async (trx) => {
+                const key = {[A_IDENTITY.PROVIDER_REF]: provider.id, [A_IDENTITY.UID]: identity};
+                const {record} = await repoIdentity.readOne({trx, key});
+                if (record) userId = record[A_IDENTITY.USER_REF];
+            });
+            return {userId};
+        };
+
         this.exchangeAuthorizationCode = async function ({trx, provider, code}) {
             try {
                 logger.info(`Trying to exchange the authorization code on GitHub...`);
@@ -86,7 +100,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_GitHub {
          * Retrieves the user's data from GitHub.
          *
          * @param {string} accessToken - The access token received after authorization.
-         * @returns {Promise<{email:string, response:Object}>} - A promise resolving to the user's data.
+         * @returns {Promise<{identity:string, response:Object}>} - A promise resolving to the user's data.
          */
         this.getUserData = async function ({accessToken}) {
             try {
@@ -104,19 +118,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_GitHub {
                     headers,
                 });
 
-                // Check if the email is missing and retrieve it from the additional endpoint
-                if (!userData.email) {
-                    const emailsData = await helpWeb.get({
-                        hostname: HOST_API,
-                        path: URI_API_USER_EMAILS,
-                        headers,
-                    });
-
-                    // Assign the primary email or the first available one
-                    userData.email = emailsData.find(emailObj => emailObj.primary)?.email || emailsData[0]?.email;
-                }
-
-                return {email: userData.email, response: userData};
+                return {identity: userData.login, response: userData};
             } catch (error) {
                 logger.exception(error);
                 throw new Error(`Failed to retrieve user data from GitHub: ${error.message}`);

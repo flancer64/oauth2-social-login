@@ -12,7 +12,7 @@
                     "id": {"type": "id"},
                     "code": {
                       "type": "string",
-                      "comment": "Unique provider code (e.g., 'google'), expected to be an ASCII string in lowercase."
+                      "comment": "Unique provider code (e.g., 'google'); must be an ASCII string in lowercase."
                     },
                     "name": {
                       "type": "string",
@@ -20,7 +20,7 @@
                     },
                     "status": {
                       "type": "enum",
-                      "comment": "Current status of the provider (e.g., 'active', 'inactive', 'deprecated').",
+                      "comment": "Current provider status (e.g., 'ACTIVE', 'INACTIVE', 'DEPRECATED').",
                       "options": {
                         "values": ["ACTIVE", "INACTIVE", "DEPRECATED"]
                       },
@@ -32,11 +32,11 @@
                     },
                     "client_secret": {
                       "type": "string",
-                      "comment": "Client secret issued by the provider for this application, used in OAuth2 authentication flows."
+                      "comment": "Client secret issued by the provider; used in OAuth2 authentication flows."
                     },
                     "date_created": {
                       "type": "datetime",
-                      "comment": "Date and time when the record was created.",
+                      "comment": "Timestamp of record creation.",
                       "default": "current"
                     }
                   },
@@ -44,6 +44,34 @@
                     "code": {
                       "type": "unique",
                       "attrs": ["code"]
+                    }
+                  }
+                }
+              },
+              "package": {
+                "user": {
+                  "entity": {
+                    "identity": {
+                      "comment": "Stores user identifiers issued by providers.",
+                      "attr": {
+                        "provider_ref": {"type": "ref"},
+                        "user_ref": {"type": "ref"},
+                        "uid": {
+                          "type": "string",
+                          "comment": "Unique identifier assigned to the user by the provider."
+                        }
+                      },
+                      "index": {
+                        "ids": {"type": "unique", "attrs": ["provider_ref", "uid"]},
+                        "users": {"type": "unique", "attrs": ["provider_ref", "user_ref"]}
+                      },
+                      "relation": {
+                        "user": {
+                          "attrs": ["user_ref"],
+                          "ref": {"path": "/user", "attrs": ["id"]},
+                          "action": {"delete": "cascade", "update": "cascade"}
+                        }
+                      }
                     }
                   }
                 }

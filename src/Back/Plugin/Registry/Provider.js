@@ -28,7 +28,7 @@ export default class Fl64_OAuth2_Social_Back_Plugin_Registry_Provider {
         /**
          * Registers a provider in the plugin registry.
          * @param {string} code - The unique identifier for the provider
-         * @param {Fl64_OAuth2_Social_Back_Api_Plugin_Provider_Executor} instance - Instance of the provider
+         * @param {Fl64_OAuth2_Social_Back_Api_Provider_Connector} instance - Instance of the provider
          */
         this.set = function (code, instance) {
             store.set(code, instance);
@@ -38,7 +38,7 @@ export default class Fl64_OAuth2_Social_Back_Plugin_Registry_Provider {
         /**
          * Retrieves the provider implementation based on the provider code.
          * @param {string} code - The unique identifier for the provider
-         * @returns {Fl64_OAuth2_Social_Back_Api_Plugin_Provider_Executor|null} - The provider instance or null if not found
+         * @returns {Fl64_OAuth2_Social_Back_Api_Provider_Connector|null} - The provider instance or null if not found
          */
         this.get = function (code) {
             const provider = store.get(code);

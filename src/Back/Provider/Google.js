@@ -2,14 +2,16 @@
  * Implementation of the OAuth2 provider executor for Google.
  * This class implements the interface for providing Google-specific functionality.
  *
- * @implements {Fl64_OAuth2_Social_Back_Api_Plugin_Provider_Executor}
+ * @implements {Fl64_OAuth2_Social_Back_Api_Provider_Connector}
  */
 export default class Fl64_OAuth2_Social_Back_Provider_Google {
     /**
      * @param {Fl64_OAuth2_Social_Back_Defaults} DEF
      * @param {TeqFw_Core_Back_Config} config
      * @param {TeqFw_Core_Shared_Api_Logger} logger
+     * @param {TeqFw_Db_Back_App_TrxWrapper} trxWrapper - Database transaction wrapper
      * @param {Fl64_OAuth2_Social_Back_Helper_Web} helpWeb
+     * @param {Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity} repoIdentity
      * @param {typeof Fl64_OAuth2_Social_Shared_Enum_Provider_Code} CODE
      */
     constructor(
@@ -17,11 +19,14 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
             Fl64_OAuth2_Social_Back_Defaults$: DEF,
             TeqFw_Core_Back_Config$: config,
             TeqFw_Core_Shared_Api_Logger$$: logger,
+            TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
             Fl64_OAuth2_Social_Back_Helper_Web$: helpWeb,
+            Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
             'Fl64_OAuth2_Social_Shared_Enum_Provider_Code.default': CODE,
         }
     ) {
         // VARS
+        const A_IDENTITY = repoIdentity.getSchema().getAttributes();
         const HOST_AUTH = 'accounts.google.com';
         const HOST_TOKEN = 'oauth2.googleapis.com';
         const HOST_USER = 'www.googleapis.com';
@@ -29,7 +34,6 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
         const URI_TOKEN = '/token';
         const URI_USER = '/oauth2/v3/userinfo';
         let URL_REDIRECT;
-
 
         // FUNCS
         /**
@@ -48,6 +52,17 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
         }
 
         // MAIN
+
+        this.checkIdentity = async function ({trx: trxOuter, provider, identity, userData}) {
+            let userId = null;
+            await trxWrapper.execute(trxOuter, async (trx) => {
+                const key = {[A_IDENTITY.PROVIDER_REF]: provider.id, [A_IDENTITY.UID]: identity};
+                const {record} = await repoIdentity.readOne({trx, key});
+                if (record) userId = record[A_IDENTITY.USER_REF];
+            });
+            return {userId};
+        };
+
         this.exchangeAuthorizationCode = async function ({trx, provider, code}) {
             try {
                 logger.info(`Trying to exchange the authorization code on Google...`);
@@ -116,7 +131,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
          * Retrieves the user's data from Google.
          *
          * @param {string} accessToken - The access token received after authorization.
-         * @returns {Promise<{email:string, response:Object}>} - A promise resolving to the user's data.
+         * @returns {Promise<{identity:string, response:Object}>} - A promise resolving to the user's data.
          */
         this.getUserData = async function ({accessToken}) {
             try {
@@ -132,7 +147,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
                     headers,
                 });
 
-                return {email: userData.email, response: userData};
+                return {identity: userData?.email?.trim().toLowerCase(), response: userData};
             } catch (error) {
                 logger.exception(error);
                 throw new Error(`Failed to retrieve user data from Google: ${error.message}`);

@@ -18,6 +18,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
      * @param {Fl64_OAuth2_Social_Back_Store_Mem_State} memState
      * @param {Fl64_OAuth2_Social_Back_Api_App_UserManager} mgrUser
      * @param {Fl64_Web_Session_Back_Manager} mgrSession
+     * @param {Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity} repoIdentity
      */
     constructor(
         {
@@ -30,6 +31,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
             Fl64_OAuth2_Social_Back_Store_Mem_State$: memState,
             Fl64_OAuth2_Social_Back_Api_App_UserManager$: mgrUser,
             Fl64_Web_Session_Back_Manager$: mgrSession,
+            Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
         }
     ) {
         // MAIN
@@ -61,14 +63,35 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                             // Exchange authorization code for access token
                             const executor = regProvider.get(providerCode);
                             logger.info(`The provider executor is retrieved for '${providerCode}'.`);
-                            const {accessToken} = await executor.exchangeAuthorizationCode({provider, code: authCode});
+                            const {accessToken} = await executor.exchangeAuthorizationCode({
+                                trx,
+                                provider,
+                                code: authCode
+                            });
                             if (accessToken) {
-                                const {email, response} = await executor.getUserData({accessToken});
-                                if (email) {
-                                    let {userId} = await mgrUser.findUser({trx, email});
+                                const {identity, response} = await executor.getUserData({accessToken});
+                                if (identity) {
+                                    let {userId} = await executor.checkIdentity({
+                                        trx,
+                                        provider,
+                                        identity,
+                                        userData: response
+                                    });
                                     if (!userId) {
-                                        const {id} = await mgrUser.createUser({trx, email});
+                                        logger.info(`The user with identity ${identity} was not found for provider '${providerCode}'.`);
+                                        const {id} = await mgrUser.createUser({
+                                            trx,
+                                            identity,
+                                            extras: {provider, response}
+                                        });
                                         userId = id;
+                                        // register new identity
+                                        const dto = repoIdentity.createDto();
+                                        dto.provider_ref = provider.id;
+                                        dto.user_ref = userId;
+                                        dto.uid = identity;
+                                        await repoIdentity.createOne({trx, dto});
+                                        logger.info(`The user identity ${identity} is registered for user '${userId}' and provider '${providerCode}'.`);
                                     }
                                     const {sessionUuid} = await mgrSession.establish({trx, req, res, userId});
                                     const url = await hlpPlugin.getUrlSessionSucceed({
@@ -79,7 +102,6 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         httpResponse: res
                                     });
                                     respond.status303(res, url);
-                                    debugger
                                 }
                             }
                         }
