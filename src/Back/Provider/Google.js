@@ -26,13 +26,13 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
         }
     ) {
         // VARS
+        const AUTH_HOST = 'accounts.google.com';
+        const AUTH_URI = '/o/oauth2/v2/auth';
         const A_IDENTITY = repoIdentity.getSchema().getAttributes();
-        const HOST_AUTH = 'accounts.google.com';
-        const HOST_TOKEN = 'oauth2.googleapis.com';
-        const HOST_USER = 'www.googleapis.com';
-        const URI_AUTH = '/o/oauth2/v2/auth';
-        const URI_TOKEN = '/token';
-        const URI_USER = '/oauth2/v3/userinfo';
+        const TOKEN_HOST = 'oauth2.googleapis.com';
+        const TOKEN_URI = '/token';
+        const USER_HOST = 'www.googleapis.com';
+        const USER_URI = '/oauth2/v3/userinfo';
         let URL_REDIRECT;
 
         // FUNCS
@@ -64,6 +64,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
         };
 
         this.exchangeAuthorizationCode = async function ({trx, provider, code}) {
+            let accessToken = null, response = null;
             try {
                 logger.info(`Trying to exchange the authorization code on Google...`);
                 // Prepare the payload for exchanging the authorization code
@@ -74,84 +75,58 @@ export default class Fl64_OAuth2_Social_Back_Provider_Google {
                     grant_type: 'authorization_code',
                     redirect_uri: getRedirect(),
                 };
-
-                // Headers for the request
                 const headers = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 };
-
-                // Perform the POST request to Google's token endpoint
-                const tokenResponse = await helpWeb.post({
-                    hostname: HOST_TOKEN,
-                    path: URI_TOKEN,
+                response = await helpWeb.post({
+                    hostname: TOKEN_HOST,
+                    path: TOKEN_URI,
                     payload,
                     headers,
-                    timeout: 5000, // Adjust timeout as needed
                 });
-
-                // Check for required fields in the response
-                if (!tokenResponse.access_token) {
+                if (!response?.access_token) {
                     logger.error('Failed to retrieve access token from Google response.');
                 } else {
                     logger.info(`Google access token is received.`);
-                    // Return the access token and additional response data
-                    return {
-                        accessToken: tokenResponse.access_token,
-                        scope: tokenResponse.scope,
-                        tokenType: tokenResponse.token_type,
-                    };
+                    accessToken = response.access_token;
                 }
             } catch (error) {
                 logger.exception(error);
                 throw new Error(`Failed to exchange authorization code: ${error.message}`);
             }
+            return {accessToken, response};
         };
 
-        /**
-         * Retrieves the authorization URL for Google.
-         *
-         * @param {string} clientId
-         * @param {string} state
-         * @returns {string} - The authorization URL for Google
-         */
         this.getAuthorizationUrl = function ({clientId, state}) {
-            // TODO: add scope to incoming params
-            // const scopes = encodeURIComponent('openid email profile');
-            const redirect = encodeURI(getRedirect());
-            return `https://${HOST_AUTH}${URI_AUTH}`
+            return `https://${AUTH_HOST}${AUTH_URI}`
                 + `?client_id=${clientId}`
                 + `&scope=openid%20email%20profile`
                 + `&response_type=code`
                 + `&state=${state}`
-                + `&redirect_uri=${redirect}`;
+                + `&redirect_uri=${getRedirect()}`;
         };
 
-        /**
-         * Retrieves the user's data from Google.
-         *
-         * @param {string} accessToken - The access token received after authorization.
-         * @returns {Promise<{identity:string, response:Object}>} - A promise resolving to the user's data.
-         */
         this.getUserData = async function ({accessToken}) {
+            let identity = null, response = null;
             try {
-                // Headers for the request
                 const headers = {
                     'Authorization': `Bearer ${accessToken}`,
                 };
-
-                // Perform the GET request to Google's user endpoint
-                const userData = await helpWeb.get({
-                    hostname: HOST_USER,
-                    path: URI_USER,
+                response = await helpWeb.get({
+                    hostname: USER_HOST,
+                    path: USER_URI,
                     headers,
                 });
-
-                return {identity: userData?.email?.trim().toLowerCase(), response: userData};
+                if (response?.email) {
+                    identity = response.email.trim().toLowerCase();
+                    logger.info(`Data for user '${identity}' is retrieved.`);
+                }
             } catch (error) {
                 logger.exception(error);
                 throw new Error(`Failed to retrieve user data from Google: ${error.message}`);
             }
+            return {identity, response};
         };
 
     }

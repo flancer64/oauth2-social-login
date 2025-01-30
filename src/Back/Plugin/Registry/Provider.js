@@ -5,22 +5,25 @@
 export default class Fl64_OAuth2_Social_Back_Plugin_Registry_Provider {
     /**
      * @param {TeqFw_Core_Shared_Api_Logger} logger
-     * @param {Fl64_OAuth2_Social_Back_Provider_GitHub} execGitHub
-     * @param {Fl64_OAuth2_Social_Back_Provider_Google} execGoogle
+     * @param {Fl64_OAuth2_Social_Back_Provider_GitHub} providerGitHub
+     * @param {Fl64_OAuth2_Social_Back_Provider_Google} providerGoogle
+     * @param {Fl64_OAuth2_Social_Back_Provider_X} providerX
      * @param {typeof Fl64_OAuth2_Social_Shared_Enum_Provider_Code} CODE
      */
     constructor(
         {
             TeqFw_Core_Shared_Api_Logger$$: logger,
-            Fl64_OAuth2_Social_Back_Provider_GitHub$: execGitHub,
-            Fl64_OAuth2_Social_Back_Provider_Google$: execGoogle,
+            Fl64_OAuth2_Social_Back_Provider_GitHub$: providerGitHub,
+            Fl64_OAuth2_Social_Back_Provider_Google$: providerGoogle,
+            Fl64_OAuth2_Social_Back_Provider_X$: providerX,
             'Fl64_OAuth2_Social_Shared_Enum_Provider_Code.default': CODE,
         }
     ) {
         // VARS
         const store = new Map();
-        store.set(CODE.GITHUB, execGitHub);
-        store.set(CODE.GOOGLE, execGoogle);
+        store.set(CODE.GITHUB, providerGitHub);
+        store.set(CODE.GOOGLE, providerGoogle);
+        store.set(CODE.X, providerX);
 
         // FUNCS
 

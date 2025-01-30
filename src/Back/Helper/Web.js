@@ -89,19 +89,20 @@ export default class Fl64_OAuth2_Social_Back_Helper_Web {
          * @param {number} [params.timeout=5000] - Timeout in milliseconds.
          * @returns {Promise<Object>} - Resolves to the parsed JSON response.
          */
-        this.post = async function ({hostname, path, payload, headers, timeout = 5000}) {
-            const postData = headers['Content-Type'] === 'application/json'
-                ? JSON.stringify(payload)
-                : querystring.stringify(payload);
+        this.post = async function ({hostname, path, payload, headers, timeout = 10000}) {
+            let body;
+            if (headers['Content-Type'] === 'application/json') body = JSON.stringify(payload);
+            else if (headers['Content-Type'] === 'application/x-www-form-urlencoded') body = payload;
+            else body = querystring.stringify(payload);
 
             return makeRequest({
                 hostname,
                 path,
                 method: 'POST',
-                body: postData,
+                body,
                 headers: {
                     ...headers,
-                    'Content-Length': Buffer.byteLength(postData),
+                    'Content-Length': Buffer.byteLength(body),
                 },
                 timeout,
             });
