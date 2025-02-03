@@ -66,6 +66,11 @@
                         "users": {"type": "unique", "attrs": ["provider_ref", "user_ref"]}
                       },
                       "relation": {
+                        "provider": {
+                          "attrs": ["provider_ref"],
+                          "ref": {"path": "/fl64/oauth/social/provider", "attrs": ["id"]},
+                          "action": {"delete": "cascade", "update": "cascade"}
+                        },
                         "user": {
                           "attrs": ["user_ref"],
                           "ref": {"path": "/user", "attrs": ["id"]},
