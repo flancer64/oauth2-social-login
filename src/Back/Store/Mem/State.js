@@ -1,6 +1,6 @@
 /**
  * Class for in-memory storage of CSRF states with automatic cleanup.
- * @implements Fl64_OAuth2_Social_Back_Api_Plugin_Store_Memory
+ * @implements TeqFw_Core_Shared_Api_Store_Memory
  */
 export default class Fl64_OAuth2_Social_Back_Store_Mem_State {
     /**
