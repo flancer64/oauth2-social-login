@@ -1,3 +1,10 @@
+import {constants as H2} from 'http2';
+
+// MODULE'S VARS
+const {
+    HTTP2_HEADER_LOCATION,
+} = H2;
+
 // MODULE'S VARS
 const PARAM_CODE = 'code';
 const PARAM_STATE = 'state';
@@ -10,27 +17,27 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
      * Initializes the callback handler.
      *
      * @param {TeqFw_Core_Shared_Api_Logger} logger - Logger instance
-     * @param {TeqFw_Web_Back_App_Server_Respond} respond - Error response helper
+     * @param {TeqFw_Web_Back_Help_Respond} respond
      * @param {TeqFw_Db_Back_RDb_IConnect} conn - Database connection instance
      * @param {Fl64_OAuth2_Social_Back_Plugin_Helper} hlpPlugin
      * @param {Fl64_OAuth2_Social_Back_Mod_Provider} modProvider - Module for interacting with OAuth2 providers
      * @param {Fl64_OAuth2_Social_Back_Plugin_Registry_Provider} regProvider
      * @param {Fl64_OAuth2_Social_Back_Store_Mem_State} memState
      * @param {Fl64_OAuth2_Social_Back_Api_App_UserManager} mgrUser
-     * @param {Fl64_Web_Session_Back_Manager} mgrSession
+     * @param {Fl64_Web_Session_Back_Manager} session
      * @param {Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity} repoIdentity
      */
     constructor(
         {
             TeqFw_Core_Shared_Api_Logger$$: logger,
-            TeqFw_Web_Back_App_Server_Respond$: respond,
+            TeqFw_Web_Back_Help_Respond$: respond,
             TeqFw_Db_Back_RDb_IConnect$: conn,
             Fl64_OAuth2_Social_Back_Plugin_Helper$: hlpPlugin,
             Fl64_OAuth2_Social_Back_Mod_Provider$: modProvider,
             Fl64_OAuth2_Social_Back_Plugin_Registry_Provider$: regProvider,
             Fl64_OAuth2_Social_Back_Store_Mem_State$: memState,
             Fl64_OAuth2_Social_Back_Api_App_UserManager$: mgrUser,
-            Fl64_Web_Session_Back_Manager$: mgrSession,
+            Fl64_Web_Session_Back_Manager$: session,
             Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
         }
     ) {
@@ -93,15 +100,21 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         await repoIdentity.createOne({trx, dto});
                                         logger.info(`The user identity ${identity} is registered for user '${userId}' and provider '${providerCode}'.`);
                                     }
-                                    const {sessionUuid} = await mgrSession.establish({trx, req, res, userId});
-                                    const url = await hlpPlugin.getUrlSessionSucceed({
+                                    const {sessionUuid} = await session.establish({trx, req, res, userId});
+                                    // get default redirect URL or saved in memory storage
+                                    let url = await hlpPlugin.getUrlSessionSucceed({
                                         trx,
                                         sessionId: sessionUuid,
                                         provider,
                                         httpRequest: req,
                                         httpResponse: res
                                     });
-                                    respond.status303(res, url);
+                                    // Redirect the user if a valid redirect URL is present in the session
+                                    const {url: redirectUrl} = await session.retrieveRedirectUrl({req, remove: true});
+                                    if (redirectUrl) url = redirectUrl;
+                                    respond.code303_SeeOther({
+                                        res, headers: {[HTTP2_HEADER_LOCATION]: url}
+                                    });
                                 }
                             }
                         }
@@ -115,7 +128,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                     // Log error and send a 500 response if something goes wrong
                     logger.exception(error);
                     await trx.rollback();
-                    respond.status500(res, error?.message);
+                    respond.code500_InternalServerError({res, body: error?.message});
                 }
             }
         };
