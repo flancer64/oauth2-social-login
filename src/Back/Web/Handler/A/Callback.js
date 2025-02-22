@@ -128,7 +128,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                     // Log error and send a 500 response if something goes wrong
                     logger.exception(error);
                     await trx.rollback();
-                    respond.code500_InternalServerError({res, body: error?.message});
+                    respond.code500_InternalServerError({res, body: error.message});
                 }
             }
         };

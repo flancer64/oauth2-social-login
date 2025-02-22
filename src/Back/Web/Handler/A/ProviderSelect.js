@@ -20,7 +20,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
      * Initializes the provider selection handler.
      *
      * @param {TeqFw_Core_Shared_Api_Logger} logger - Logger instance
-     * @param {TeqFw_Web_Back_App_Server_Respond} respond - Error response helper
+     * @param {TeqFw_Web_Back_Help_Respond} respond - Error response helper
      * @param {TeqFw_Db_Back_RDb_IConnect} conn - Database connection instance
      * @param {Fl64_OAuth2_Social_Back_Mod_Provider} modProvider - Module for interacting with OAuth2 providers
      * @param {Fl64_OAuth2_Social_Back_Plugin_Registry_Provider} regProviders
@@ -29,7 +29,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
     constructor(
         {
             TeqFw_Core_Shared_Api_Logger$$: logger,
-            TeqFw_Web_Back_App_Server_Respond$: respond,
+            TeqFw_Web_Back_Help_Respond$: respond,
             TeqFw_Db_Back_RDb_IConnect$: conn,
             Fl64_OAuth2_Social_Back_Mod_Provider$: modProvider,
             Fl64_OAuth2_Social_Back_Plugin_Registry_Provider$: regProviders,
@@ -79,14 +79,16 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
 
                 // Commit the transaction after processing
                 await trx.commit();
-                respond.status200(res, htmlContent, {
-                    [HTTP2_HEADER_CONTENT_TYPE]: 'text/html; charset=utf-8',
+                respond.code200_Ok({
+                    res, body: htmlContent, headers: {
+                        [HTTP2_HEADER_CONTENT_TYPE]: 'text/html; charset=utf-8',
+                    }
                 });
             } catch (error) {
                 // Log error and send a 500 response if something goes wrong
                 logger.exception(error);
                 await trx.rollback();
-                respond.status500(res, error?.message);
+                respond.code500_InternalServerError({res, body: error.message});
             }
         };
     }
