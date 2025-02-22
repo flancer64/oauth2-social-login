@@ -64,7 +64,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_GitHub {
                     headers,
                 });
                 if (!response?.access_token) {
-                    logger.error('Failed to retrieve access token from GitHub response.');
+                    logger.error(`Failed to retrieve access token from GitHub response: ${JSON.stringify(response)}`);
                 } else {
                     logger.info(`GitHub access token is received.`);
                     accessToken = response.access_token;
