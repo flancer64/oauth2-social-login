@@ -1,5 +1,3 @@
-import {randomUUID} from 'node:crypto';
-
 /**
  * Implementation of the OAuth2 provider executor for X (Twitter).
  * This class implements the interface for providing X-specific functionality.
@@ -10,6 +8,7 @@ import {randomUUID} from 'node:crypto';
  */
 export default class Fl64_OAuth2_Social_Back_Provider_X {
     /**
+     * @param {typeof import('node:crypto')} crypto
      * @param {Fl64_OAuth2_Social_Back_Defaults} DEF
      * @param {TeqFw_Core_Back_Config} config
      * @param {TeqFw_Core_Shared_Api_Logger} logger
@@ -20,6 +19,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_X {
      */
     constructor(
         {
+            'node:crypto': crypto,
             Fl64_OAuth2_Social_Back_Defaults$: DEF,
             TeqFw_Core_Back_Config$: config,
             TeqFw_Core_Shared_Api_Logger$$: logger,
@@ -30,6 +30,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_X {
         }
     ) {
         // VARS
+        const {randomUUID} = crypto;
         const AUTH_HOST = 'x.com';
         const AUTH_URI = '/i/oauth2/authorize';
         const A_IDENTITY = repoIdentity.getSchema().getAttributes();

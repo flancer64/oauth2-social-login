@@ -1,17 +1,3 @@
-// MODULE'S IMPORT
-import path from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {readFile} from 'node:fs/promises';
-import {constants as H2} from 'node:http2';
-import Mustache from 'mustache';
-import {randomUUID} from 'node:crypto';
-
-// MODULE'S VARS
-const {
-    HTTP2_HEADER_CONTENT_TYPE,
-} = H2;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 /**
  * Handler for processing OAuth2 provider selection requests.
  */
@@ -19,6 +5,12 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
     /**
      * Initializes the provider selection handler.
      *
+     * @param {typeof import('node:crypto')} crypto
+     * @param {typeof import('node:fs/promises')} fsPromises
+     * @param {typeof import('node:http2')} http2
+     * @param {typeof import('node:mustache')} mustache
+     * @param {typeof import('node:path')} path
+     * @param {typeof import('node:url')} url
      * @param {TeqFw_Core_Shared_Api_Logger} logger - Logger instance
      * @param {TeqFw_Web_Back_Help_Respond} respond - Error response helper
      * @param {TeqFw_Db_Back_RDb_IConnect} conn - Database connection instance
@@ -28,6 +20,12 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
      */
     constructor(
         {
+            'node:crypto': crypto,
+            'node:fs/promises': fsPromises,
+            'node:http2': http2,
+            'node:mustache': mustache,
+            'node:path': path,
+            'node:url': url,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Web_Back_Help_Respond$: respond,
             TeqFw_Db_Back_RDb_IConnect$: conn,
@@ -37,6 +35,15 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
         }
     ) {
         // VARS
+        const {
+            HTTP2_HEADER_CONTENT_TYPE,
+        } = http2.constants;
+        const {randomUUID} = crypto;
+        const {readFile} = fsPromises;
+        const {default: Mustache} = mustache;
+
+        const __filename = url.fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
 
         // MAIN
         /**

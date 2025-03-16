@@ -1,15 +1,21 @@
-import https from 'https';
-import querystring from 'querystring';
-
 /**
  * Helper class for performing web requests in this plugin.
  */
 export default class Fl64_OAuth2_Social_Back_Helper_Web {
     /**
      * Constructor for the web helper.
+     *
+     * @param {typeof import('node:https')} https
+     * @param {typeof import('querystring')} querystring
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      */
-    constructor({TeqFw_Core_Shared_Api_Logger$$: logger}) {
+    constructor(
+        {
+            'node:https': https,
+            'node:querystring': querystring,
+            TeqFw_Core_Shared_Api_Logger$$: logger,
+        }
+    ) {
         // VARS
 
         // FUNCS

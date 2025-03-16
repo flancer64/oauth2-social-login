@@ -1,14 +1,3 @@
-import {constants as H2} from 'http2';
-
-// MODULE'S VARS
-const {
-    HTTP2_HEADER_LOCATION,
-} = H2;
-
-// MODULE'S VARS
-const PARAM_CODE = 'code';
-const PARAM_STATE = 'state';
-
 /**
  * Handler for processing OAuth2 callback requests.
  */
@@ -16,6 +5,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
     /**
      * Initializes the callback handler.
      *
+     * @param {typeof import('node:http2')} http2
      * @param {TeqFw_Core_Shared_Api_Logger} logger - Logger instance
      * @param {TeqFw_Web_Back_Help_Respond} respond
      * @param {TeqFw_Db_Back_RDb_IConnect} conn - Database connection instance
@@ -29,6 +19,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
      */
     constructor(
         {
+            'node:http2': http2,
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Web_Back_Help_Respond$: respond,
             TeqFw_Db_Back_RDb_IConnect$: conn,
@@ -41,6 +32,13 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
             Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
         }
     ) {
+        // VARS
+        const {
+            HTTP2_HEADER_LOCATION,
+        } = http2.constants;
+        const PARAM_CODE = 'code';
+        const PARAM_STATE = 'state';
+
         // MAIN
 
         /**
