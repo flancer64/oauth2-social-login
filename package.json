@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@flancer64/teq-agave-web-session": "git+ssh://git@github.com:flancer64/teq-agave-web-session.git",
+    "@teqfw/core": ">=0.34.0 <1.0.0",
     "@teqfw/db": ">=0.22.1 <1.0.0",
     "@teqfw/email": ">=0.21.0 <1.0.0",
     "@teqfw/web-api": ">=0.21.0 <1.0.0",
