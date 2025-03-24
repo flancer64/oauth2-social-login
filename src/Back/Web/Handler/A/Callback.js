@@ -9,7 +9,6 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
      * @param {TeqFw_Core_Shared_Api_Logger} logger - Logger instance
      * @param {TeqFw_Web_Back_Help_Respond} respond
      * @param {TeqFw_Db_Back_RDb_IConnect} conn - Database connection instance
-     * @param {Fl64_OAuth2_Social_Back_Plugin_Helper} hlpPlugin
      * @param {Fl64_OAuth2_Social_Back_Mod_Provider} modProvider - Module for interacting with OAuth2 providers
      * @param {Fl64_OAuth2_Social_Back_Plugin_Registry_Provider} regProvider
      * @param {Fl64_OAuth2_Social_Back_Store_Mem_State} memState
@@ -23,7 +22,6 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
             TeqFw_Core_Shared_Api_Logger$$: logger,
             TeqFw_Web_Back_Help_Respond$: respond,
             TeqFw_Db_Back_RDb_IConnect$: conn,
-            Fl64_OAuth2_Social_Back_Plugin_Helper$: hlpPlugin,
             Fl64_OAuth2_Social_Back_Mod_Provider$: modProvider,
             Fl64_OAuth2_Social_Back_Plugin_Registry_Provider$: regProvider,
             Fl64_OAuth2_Social_Back_Store_Mem_State$: memState,
@@ -98,18 +96,10 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         await repoIdentity.createOne({trx, dto});
                                         logger.info(`The user identity ${identity} is registered for user '${userId}' and provider '${providerCode}'.`);
                                     }
-                                    const {sessionUuid} = await session.establish({trx, req, res, userId});
-                                    // get default redirect URL or saved in memory storage
-                                    let url = await hlpPlugin.getUrlSessionSucceed({
-                                        trx,
-                                        sessionId: sessionUuid,
-                                        provider,
-                                        httpRequest: req,
-                                        httpResponse: res
-                                    });
+                                    await session.establish({trx, req, res, userId});
                                     // Redirect the user if a valid redirect URL is present in the session
                                     const {url: redirectUrl} = await session.retrieveRedirectUrl({req, remove: true});
-                                    if (redirectUrl) url = redirectUrl;
+                                    const url = redirectUrl ?? '/';
                                     respond.code303_SeeOther({
                                         res, headers: {[HTTP2_HEADER_LOCATION]: url}
                                     });
