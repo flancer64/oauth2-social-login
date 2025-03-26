@@ -16,7 +16,7 @@ export default class Fl64_OAuth2_Social_Back_Plugin_Registry_Provider {
             Fl64_OAuth2_Social_Back_Provider_GitHub$: providerGitHub,
             Fl64_OAuth2_Social_Back_Provider_Google$: providerGoogle,
             Fl64_OAuth2_Social_Back_Provider_X$: providerX,
-            'Fl64_OAuth2_Social_Shared_Enum_Provider_Code.default': CODE,
+            Fl64_OAuth2_Social_Shared_Enum_Provider_Code$: CODE,
         }
     ) {
         // VARS

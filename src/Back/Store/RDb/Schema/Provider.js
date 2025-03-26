@@ -102,7 +102,7 @@ export default class Fl64_OAuth2_Social_Back_Store_RDb_Schema_Provider {
         {
             Fl64_OAuth2_Social_Back_Defaults$: DEF,
             TeqFw_Core_Shared_Util_Cast$: cast,
-            'Fl64_OAuth2_Social_Shared_Enum_Provider_Status.default': STATUS,
+            Fl64_OAuth2_Social_Shared_Enum_Provider_Status$: STATUS,
         }
     ) {
         // INSTANCE METHODS

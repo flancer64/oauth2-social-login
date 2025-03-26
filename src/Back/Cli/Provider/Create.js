@@ -34,7 +34,7 @@ export default function Factory(
         TeqFw_Core_Back_App$: app,
         TeqFw_Db_Back_RDb_IConnect$: conn,
         Fl64_OAuth2_Social_Back_Mod_Provider$: modProvider,
-        'Fl64_OAuth2_Social_Shared_Enum_Provider_Status.default': STATUS,
+        Fl64_OAuth2_Social_Shared_Enum_Provider_Status$: STATUS,
     }
 ) {
     /**

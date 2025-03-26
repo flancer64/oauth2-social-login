@@ -26,7 +26,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_X {
             TeqFw_Db_Back_App_TrxWrapper$: trxWrapper,
             Fl64_OAuth2_Social_Back_Helper_Web$: helpWeb,
             Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
-            'Fl64_OAuth2_Social_Shared_Enum_Provider_Code.default': CODE,
+            Fl64_OAuth2_Social_Shared_Enum_Provider_Code$: CODE,
         }
     ) {
         // VARS
