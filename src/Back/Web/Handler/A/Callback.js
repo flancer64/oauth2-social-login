@@ -74,6 +74,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                             if (accessToken) {
                                 const {identity, response} = await executor.getUserData({accessToken});
                                 if (identity) {
+                                    let url; // to redirect after the authentication or registration
                                     let {userId} = await executor.checkIdentity({
                                         trx,
                                         provider,
@@ -82,12 +83,13 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                     });
                                     if (!userId) {
                                         logger.info(`The user with identity ${identity} was not found for provider '${providerCode}'.`);
-                                        const {id} = await mgrUser.createUser({
+                                        const {id, redirectUrl} = await mgrUser.createUser({
                                             trx,
                                             identity,
                                             extras: {provider, response}
                                         });
                                         userId = id;
+                                        url = redirectUrl;
                                         // register new identity
                                         const dto = repoIdentity.createDto();
                                         dto.provider_ref = provider.id;
@@ -97,9 +99,11 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         logger.info(`The user identity ${identity} is registered for user '${userId}' and provider '${providerCode}'.`);
                                     }
                                     await session.establish({trx, req, res, userId});
-                                    // Redirect the user if a valid redirect URL is present in the session
-                                    const {url: redirectUrl} = await session.retrieveRedirectUrl({req, remove: true});
-                                    const url = redirectUrl ?? '/';
+                                    if (!url) {
+                                        // Redirect the user if a valid redirect URL is present in the session
+                                        const {url: redirect} = await session.retrieveRedirectUrl({req, remove: true});
+                                        url = redirect ?? '/';
+                                    }
                                     respond.code303_SeeOther({
                                         res, headers: {[HTTP2_HEADER_LOCATION]: url}
                                     });
