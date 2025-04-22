@@ -80,31 +80,31 @@ export default function Factory(
     const res = fCommand.create();
     res.realm = DEF.CLI_PREFIX;
     res.name = 'provider-create';
-    res.desc = 'Create a new OAuth2 provider with clientId, clientSecret, code, and name.';
+    res.desc = 'create a new OAuth2 provider with clientId, clientSecret, code, and name.';
     res.action = action;
 
     // Define the --clientId option
     const optClientId = fOpt.create();
     optClientId.flags = `-i, --${OPT_CLIENT_ID} <clientId>`;
-    optClientId.description = 'The unique client ID provided by the external provider';
+    optClientId.description = 'the unique client ID provided by the external provider';
     res.opts.push(optClientId);
 
     // Define the --clientSecret option
     const optClientSecret = fOpt.create();
     optClientSecret.flags = `-s, --${OPT_CLIENT_SECRET} <clientSecret>`;
-    optClientSecret.description = 'The secret key provided by the external provider';
+    optClientSecret.description = 'the secret key provided by the external provider';
     res.opts.push(optClientSecret);
 
     // Define the --code option
     const optCode = fOpt.create();
     optCode.flags = `-c, --${OPT_CODE} <code>`;
-    optCode.description = 'The unique code for the OAuth2 provider';
+    optCode.description = 'the unique code for the OAuth2 provider';
     res.opts.push(optCode);
 
     // Define the --name option
     const optName = fOpt.create();
     optName.flags = `-n, --${OPT_NAME} <name>`;
-    optName.description = 'The human-readable name for the OAuth2 provider';
+    optName.description = 'the human-readable name for the OAuth2 provider';
     res.opts.push(optName);
 
     return res;
