@@ -90,7 +90,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         });
                                         userId = id;
                                         url = redirectUrl;
-                                        // register new identity
+                                        // register a new identity
                                         const dto = repoIdentity.createDto();
                                         dto.provider_ref = provider.id;
                                         dto.user_ref = userId;
@@ -98,12 +98,22 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                         await repoIdentity.createOne({trx, dto});
                                         logger.info(`The user identity ${identity} is registered for user '${userId}' and provider '${providerCode}'.`);
                                     }
-                                    await session.establish({trx, req, res, userId});
-                                    if (!url) {
-                                        // Redirect the user if a valid redirect URL is present in the session
-                                        const {url: redirect} = await session.retrieveRedirectUrl({req, remove: true});
-                                        url = redirect ?? '/';
+                                    const {sessionId, redirectUri} = await session.establish({trx, req, res, userId});
+                                    if (sessionId) {
+                                        if (!url) {
+                                            // Redirect the user if a valid redirect URL is present in the session
+                                            const {url: redirect} = await session.retrieveRedirectUrl({
+                                                req,
+                                                remove: true
+                                            });
+                                            url = redirect ?? '/';
+                                        }
+                                    } else {
+                                        if (redirectUri) {
+                                            url = redirectUri;
+                                        }
                                     }
+                                    logger.info(`The user #${userId} is redirected to '${url}'.`);
                                     respond.code303_SeeOther({
                                         res, headers: {[HTTP2_HEADER_LOCATION]: url}
                                     });
