@@ -13,6 +13,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
      * @param {Fl64_OAuth2_Social_Back_Plugin_Registry_Provider} regProvider
      * @param {Fl64_OAuth2_Social_Back_Store_Mem_State} memState
      * @param {Fl64_OAuth2_Social_Back_Api_App_UserManager} mgrUser
+     * @param {Fl64_OAuth2_Social_Back_Email_SignIn_Confirm} emailConfirm
      * @param {Fl64_Web_Session_Back_Manager} session
      * @param {Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity} repoIdentity
      */
@@ -26,6 +27,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
             Fl64_OAuth2_Social_Back_Plugin_Registry_Provider$: regProvider,
             Fl64_OAuth2_Social_Back_Store_Mem_State$: memState,
             Fl64_OAuth2_Social_Back_Api_App_UserManager$: mgrUser,
+            Fl64_OAuth2_Social_Back_Email_SignIn_Confirm$: emailConfirm,
             Fl64_Web_Session_Back_Manager$: session,
             Fl64_OAuth2_Social_Back_Store_RDb_Repo_User_Identity$: repoIdentity,
         }
@@ -63,7 +65,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                         logger.info(`The callback is allowed for authentication provider '${providerCode}'.`);
                         const provider = await modProvider.read({trx, code: providerCode});
                         if (provider) {
-                            // Exchange authorization code for access token
+                            // Exchange authorization code for an access token
                             const executor = regProvider.get(providerCode);
                             logger.info(`The provider executor is retrieved for '${providerCode}'.`);
                             const {accessToken} = await executor.exchangeAuthorizationCode({
@@ -108,6 +110,8 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                             });
                                             url = redirect ?? '/';
                                         }
+                                        // send the confirmation email w/o await
+                                        emailConfirm.perform({userId, email: identity}).catch(logger.exception);
                                     } else {
                                         if (redirectUri) {
                                             url = redirectUri;

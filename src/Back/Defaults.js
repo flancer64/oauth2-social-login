@@ -4,6 +4,8 @@
 export default class Fl64_OAuth2_Social_Back_Defaults {
     CLI_PREFIX = 'fl64-oauth-social'; // prefix for CLI actions
 
+    LOCALE = 'en';
+
     /** @type {TeqFw_Web_Back_Defaults} */
     MOD_WEB;
 
