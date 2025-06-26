@@ -47,7 +47,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
          * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
          * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
          *
-         * @return {Promise<void>}
+         * @return {Promise<boolean>}
          */
         this.act = async function (req, res) {
             const parts = req.url.split('?');
@@ -121,6 +121,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                     respond.code303_SeeOther({
                                         res, headers: {[HTTP2_HEADER_LOCATION]: url}
                                     });
+                                    return true;
                                 }
                             }
                         }
@@ -135,6 +136,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                     logger.exception(error);
                     await trx.rollback();
                     respond.code500_InternalServerError({res, body: error.message});
+                    return true;
                 }
             }
         };

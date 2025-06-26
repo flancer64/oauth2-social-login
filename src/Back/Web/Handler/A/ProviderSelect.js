@@ -52,7 +52,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
          * @param {module:http.IncomingMessage|module:http2.Http2ServerRequest} req - Incoming HTTP request
          * @param {module:http.ServerResponse|module:http2.Http2ServerResponse} res - HTTP response object
          *
-         * @return {Promise<void>}
+         * @return {Promise<boolean>}
          */
         this.act = async function (req, res) {
             const trx = await conn.startTransaction();
@@ -91,6 +91,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_ProviderSelect {
                         [HTTP2_HEADER_CONTENT_TYPE]: 'text/html; charset=utf-8',
                     }
                 });
+                return true;
             } catch (error) {
                 // Log error and send a 500 response if something goes wrong
                 logger.exception(error);

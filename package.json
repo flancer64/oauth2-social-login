@@ -24,7 +24,6 @@
     "@teqfw/core": ">=0.34.0 <1.0.0",
     "@teqfw/db": ">=0.22.1 <1.0.0",
     "@teqfw/email": ">=0.21.0 <1.0.0",
-    "@teqfw/web-api": ">=0.21.0 <1.0.0",
     "mustache": "^4.2.0"
   },
   "devDependencies": {
