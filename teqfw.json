@@ -8,7 +8,10 @@
   "@teqfw/core": {
     "commands": [
       "Fl64_OAuth2_Social_Back_Cli_Provider_Create"
-    ]
+    ],
+    "plugin": {
+      "onStop": "Fl64_OAuth2_Social_Back_Plugin_Stop"
+    }
   },
   "@teqfw/web": {
     "handlers": {

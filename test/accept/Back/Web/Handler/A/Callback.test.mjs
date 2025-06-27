@@ -42,7 +42,7 @@ describe('Fl64_OAuth2_Social_Back_Web_Handler_A_Callback', () => {
 
     after(async () => {
         await dbDisconnect(container);
-        memState.stopCleanup();
+        memState.cleanup();
     });
 
     it('should process a valid callback request and create a new user session', async () => {
