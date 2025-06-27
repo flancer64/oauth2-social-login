@@ -6,7 +6,11 @@ export default class Fl64_OAuth2_Social_Back_Store_Mem_State {
     /**
      * @param {TeqFw_Core_Shared_Api_Logger} logger
      */
-    constructor({TeqFw_Core_Shared_Api_Logger$$: logger}) {
+    constructor(
+        {
+            TeqFw_Core_Shared_Api_Logger$$: logger
+        }
+    ) {
         // VARS
         const store = new Map(); // Internal storage for states
         let cleanupInterval = null;
@@ -36,6 +40,7 @@ export default class Fl64_OAuth2_Social_Back_Store_Mem_State {
 
         this.cleanup = function () {
             if (cleanupInterval) clearInterval(cleanupInterval);
+            logger.info(`'${this.constructor.name}' is cleaned.`);
         };
 
         /**
