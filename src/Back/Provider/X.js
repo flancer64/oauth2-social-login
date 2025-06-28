@@ -49,6 +49,7 @@ export default class Fl64_OAuth2_Social_Back_Provider_X {
          */
         function getRedirect() {
             if (!URL_REDIRECT) {
+                // TODO: use Adapter API here
                 /** @type {TeqFw_Web_Back_Plugin_Dto_Config_Local.Dto} */
                 const web = config.getLocal(DEF.SHARED.MOD_WEB.NAME);
                 const base = `https://${web.urlBase}/${DEF.SHARED.SPACE}`;
