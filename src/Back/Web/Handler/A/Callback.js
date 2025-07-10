@@ -121,7 +121,7 @@ export default class Fl64_OAuth2_Social_Back_Web_Handler_A_Callback {
                                     respond.code303_SeeOther({
                                         res, headers: {[HTTP2_HEADER_LOCATION]: url}
                                     });
-                                    return true;
+                                    // return true; - close the transaction
                                 }
                             }
                         }
